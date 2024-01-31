@@ -65,9 +65,9 @@ using (var db = new LiteDatabase("data.db"))
     
     terminal.RegisterCommand("statistics", (pwd, command, args) =>
     {
-        var result = new Dictionary<string, int>();
+        var result = new Dictionary<string, Dictionary<string, int>>(); // yyyy-MM, tag, count
         var files = Directory.GetFiles(pwd);
-        var imageCount = 0;
+        var imageCount = new Dictionary<string, int>(); // yyyy-MM, count
         for (var i = 0; i < files.Length; i++)
         {
             var path = files[i];
@@ -106,21 +106,43 @@ using (var db = new LiteDatabase("data.db"))
             var identifier = fileData.FindOne(x => x.Path == path).Identifier;
             var image = images.FindOne(x => x.Identifier == identifier);
 
+            var info = new FileInfo(path);
+            var date = DateTime.Now.ToString("yyyy-MM");
+            if (info.CreationTime < info.LastWriteTime)
+            {
+                date = info.CreationTime.ToString("yyyy-MM");
+            }
+            else
+            {
+                date = info.LastWriteTime.ToString("yyyy-MM");
+            }
+
+            result.TryAdd(date, []);
             foreach (var tag in image.Tags.Keys)
             {
-                result.TryAdd(tag, 0);
-                result[tag] += 1;
+                result[date].TryAdd(tag, 0);
+                result[date][tag] += 1;
             }
-            imageCount++;
+
+            imageCount.TryAdd(date, 0);
+            imageCount[date]++;
         }
         using (var writer = new StreamWriter("out.csv"))
         {
-            writer.WriteLine("tag,count");
-            foreach (var i in result)
+            writer.WriteLine("date,tag,count,month_total_image_count");
+            foreach (var monthResult in result)
             {
-                writer.WriteLine($"{i.Key},{i.Value}");
+                foreach (var tag in monthResult.Value)
+                {
+                    writer.WriteLine($"{monthResult.Key},{tag.Key},{tag.Value},{imageCount[monthResult.Key]}");
+                }
             }
-            writer.WriteLine($"total_image_count,{imageCount}");
+            var total = 0;
+            foreach (var count in imageCount)
+            {
+                total += count.Value;
+            }
+            writer.WriteLine($",total_image_count,{total},");
         }
         Console.WriteLine();
     });

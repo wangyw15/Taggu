@@ -6,7 +6,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Taggu.Core;
 
-public class DeepDanbooru
+public class DeepDanbooru : IDisposable
 {
     private readonly InferenceSession _Session;
     public readonly List<string> Tags;
@@ -85,5 +85,10 @@ public class DeepDanbooru
             }
         }
         return ret;
+    }
+
+    public void Dispose()
+    {
+        _Session.Dispose();
     }
 }
