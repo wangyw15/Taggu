@@ -67,6 +67,7 @@ using (var db = new LiteDatabase("data.db"))
     {
         var result = new Dictionary<string, int>();
         var files = Directory.GetFiles(pwd);
+        var imageCount = 0;
         for (var i = 0; i < files.Length; i++)
         {
             var path = files[i];
@@ -110,6 +111,7 @@ using (var db = new LiteDatabase("data.db"))
                 result.TryAdd(tag, 0);
                 result[tag] += 1;
             }
+            imageCount++;
         }
         using (var writer = new StreamWriter("out.csv"))
         {
@@ -118,6 +120,7 @@ using (var db = new LiteDatabase("data.db"))
             {
                 writer.WriteLine($"{i.Key},{i.Value}");
             }
+            writer.WriteLine($"total_image_count,{imageCount}");
         }
         Console.WriteLine();
     });
