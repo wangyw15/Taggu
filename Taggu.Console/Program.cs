@@ -30,7 +30,7 @@ using (var db = new LiteDatabase("data.db"))
             Console.WriteLine($"{tag.Key}: {tag.Value}");
         }
     });
-    terminal.RegisterCommand("run", args =>
+    terminal.RegisterCommand("tagall", args =>
     {
         // add entry if not exists
         if (!galleries.Exists(x => x.Folder == pwd))
