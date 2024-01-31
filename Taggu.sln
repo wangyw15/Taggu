@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Taggu.Core", "Taggu.Core\Taggu.Core.csproj", "{14B72E8C-2622-455E-8E6E-7D8DA4C83DCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taggu.TerminalUI", "Taggu.Console\Taggu.TerminalUI.csproj", "{A3DB8F13-C4F9-4D45-AF24-486ABA2BB5E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taggu.TerminalUI", "Taggu.TerminalUI\Taggu.TerminalUI.csproj", "{A3DB8F13-C4F9-4D45-AF24-486ABA2BB5E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
