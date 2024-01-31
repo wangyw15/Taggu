@@ -1,26 +1,27 @@
 ﻿namespace Taggu.Core;
 
-public class Gallery
+public class FileData(string path)
 {
+    /// <summary>
+    /// For LiteDB
+    /// </summary>
     public int ID { get; set; }
-    public string Folder { get; set; } = "";
-    public Dictionary<string, string> Images { get; set; } = []; // filename md5
 
-    public Gallery(string folder)
-    {
-        Folder = folder;
-    }
+    public string Path { get; set; } = path;
+
+    public string Identifier { get; set; } = "";
 }
 
-public class ImageEntry
+public class ImageTags(string identifier)
 {
+    /// <summary>
+    /// For LiteDB
+    /// </summary>
     public int ID { get; set; }
-    public string Name { get; set; } = ""; // md5
-    public DateTime LastUpdate { get; set; }
-    public Dictionary<string, float> Tags { get; set; } = [];
 
-    public ImageEntry(string name)
-    {
-        Name = name;
-    }
+    public string Identifier { get; set; } = identifier;
+
+    public DateTime LastUpdate { get; set; }
+    
+    public Dictionary<string, float> Tags { get; set; } = [];
 }

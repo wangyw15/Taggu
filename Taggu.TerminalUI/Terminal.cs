@@ -2,11 +2,21 @@
 
 public class Terminal
 {
-    private readonly Dictionary<string, Action<string[]>> _Commands = [];
+    public delegate void CommandHandler(string currentDirectory, string command, string[] arguments);
+    
+    private readonly Dictionary<string, CommandHandler> _Commands = [];
+    private string _CurrentDirectory = Environment.CurrentDirectory;
 
-    public void RegisterCommand(string name, Action<string[]> action)
+    public void RegisterCommand(string name, CommandHandler action)
     {
         _Commands[name] = action;
+    }
+
+    public static void Error(object? value)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Error.WriteLine(value);
+        Console.ForegroundColor = ConsoleColor.White;
     }
 
     public void Run()
@@ -14,7 +24,7 @@ public class Terminal
         Console.ForegroundColor = ConsoleColor.White;
         while (true)
         {
-            Console.Write("> ");
+            Console.Write($"{_CurrentDirectory}>");
             var line = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(line))
             {
@@ -26,6 +36,25 @@ public class Terminal
             {
                 break;
             }
+            else if (arguments[0] == "cd")
+            {
+                if (arguments[1] == ".")
+                {
+                    // do nothing
+                }
+                else if (arguments[1] == "..")
+                {
+                    _CurrentDirectory = Path.GetDirectoryName(_CurrentDirectory) ?? _CurrentDirectory;
+                }
+                else
+                {
+                    _CurrentDirectory = string.Join(" ", arguments[1..]);
+                }
+            }
+            else if (arguments[0] == "pwd")
+            {
+                Console.WriteLine(_CurrentDirectory);
+            }
             else if (arguments[0] == "clear")
             {
                 Console.Clear();
@@ -34,15 +63,14 @@ public class Terminal
             {
                 if (_Commands.TryGetValue(arguments[0], out var action))
                 {
-                    action(arguments);
+                    action(_CurrentDirectory, arguments[0], arguments[1..]);
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Invalid command");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Error("Invalid command");
                 }
             }
+            Console.WriteLine();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Taggu.Core;
 public class DeepDanbooru
 {
     private readonly InferenceSession _Session;
-    private readonly List<string> _Tags;
+    public readonly List<string> Tags;
     private readonly NodeMetadata _InputMetadata;
 
     public DeepDanbooru(string modelPath, string tagsPath, bool useDirectML = false)
@@ -31,7 +31,7 @@ public class DeepDanbooru
 
         _Session = new InferenceSession(modelPath, options);
         _InputMetadata = _Session.InputMetadata[_Session.InputNames[0]];
-        _Tags = [.. File.ReadAllLines(tagsPath)];
+        Tags = [.. File.ReadAllLines(tagsPath)];
     }
 
     public float[] LoadImage(string path)
@@ -81,7 +81,7 @@ public class DeepDanbooru
         {
             if (output[i] > threshold)
             {
-                ret.Add(_Tags[i], output[i]);
+                ret.Add(Tags[i], output[i]);
             }
         }
         return ret;
